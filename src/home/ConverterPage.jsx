@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./css/ConverterPage.css";
 
 const MIME_BY_FORMAT = {
@@ -310,13 +310,13 @@ const ConverterPage = () => {
         <nav aria-label="Main navigation">
           <ul className="menu-links">
             <li>
-              <a href="#privacy-policy">Privacy Policy</a>
+              <a href="/privacy">Privacy Policy</a>
             </li>
             <li>
-              <a href="#about-us">About Us</a>
+              <a href="/about">About Us</a>
             </li>
             <li>
-              <a href="#contact">Contact</a>
+              <a href="/contact">Contact</a>
             </li>
           </ul>
         </nav>
@@ -555,6 +555,11 @@ const ConverterPage = () => {
         <p>
           Powered by <span>ImageConvert Pro</span>
         </p>
+        <div className="footer-links">
+          <a href="/about">About</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/contact">Contact</a>
+        </div>
       </footer>
     </main>
   );
