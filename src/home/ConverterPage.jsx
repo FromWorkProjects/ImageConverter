@@ -183,6 +183,9 @@ const ConverterPage = () => {
   const [theme, setTheme] = useState("light");
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPreviewUrl, setSelectedPreviewUrl] = useState("");
+  const [backgroundPreviewUrl, setBackgroundPreviewUrl] = useState("");
+  const [transformPreviewUrl, setTransformPreviewUrl] = useState("");
+  const [combinedPreviewUrl, setCombinedPreviewUrl] = useState("");
   const [detectedFormat, setDetectedFormat] = useState("auto");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -212,8 +215,152 @@ const ConverterPage = () => {
       if (selectedPreviewUrl) {
         URL.revokeObjectURL(selectedPreviewUrl);
       }
+      if (backgroundPreviewUrl) {
+        URL.revokeObjectURL(backgroundPreviewUrl);
+      }
+      if (transformPreviewUrl) {
+        URL.revokeObjectURL(transformPreviewUrl);
+      }
+      if (combinedPreviewUrl) {
+        URL.revokeObjectURL(combinedPreviewUrl);
+      }
     };
-  }, [downloadUrl, selectedPreviewUrl]);
+  }, [
+    downloadUrl,
+    selectedPreviewUrl,
+    backgroundPreviewUrl,
+    transformPreviewUrl,
+    combinedPreviewUrl,
+  ]);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      if (backgroundPreviewUrl) {
+        URL.revokeObjectURL(backgroundPreviewUrl);
+        setBackgroundPreviewUrl("");
+      }
+      if (transformPreviewUrl) {
+        URL.revokeObjectURL(transformPreviewUrl);
+        setTransformPreviewUrl("");
+      }
+      if (combinedPreviewUrl) {
+        URL.revokeObjectURL(combinedPreviewUrl);
+        setCombinedPreviewUrl("");
+      }
+      return;
+    }
+
+    let isCancelled = false;
+    let sourceImageUrl = "";
+
+    const generateLivePreviews = async () => {
+      try {
+        sourceImageUrl = URL.createObjectURL(selectedFile);
+        const image = await loadImageFromUrl(sourceImageUrl);
+        const width = Math.max(1, Number(resizeWidth) || image.width);
+        const height = Math.max(
+          1,
+          Math.round((image.height / image.width) * width),
+        );
+
+        const baseCanvas = document.createElement("canvas");
+        baseCanvas.width = width;
+        baseCanvas.height = height;
+        const baseContext = baseCanvas.getContext("2d");
+
+        if (!baseContext) {
+          return;
+        }
+
+        baseContext.clearRect(0, 0, width, height);
+        baseContext.drawImage(image, 0, 0, width, height);
+
+        const bgCanvas = document.createElement("canvas");
+        bgCanvas.width = width;
+        bgCanvas.height = height;
+        const bgContext = bgCanvas.getContext("2d");
+        if (!bgContext) {
+          return;
+        }
+        bgContext.clearRect(0, 0, width, height);
+        bgContext.drawImage(baseCanvas, 0, 0);
+        if (removeBackground) {
+          removeLightBackground(
+            bgContext,
+            width,
+            height,
+            backgroundSensitivity,
+          );
+        }
+
+        const transformCanvas = rotateAndMirrorCanvas(
+          baseCanvas,
+          rotation,
+          mirrorHorizontal,
+        );
+        const combinedCanvas = rotateAndMirrorCanvas(
+          bgCanvas,
+          rotation,
+          mirrorHorizontal,
+        );
+
+        const [bgBlob, transformBlob, combinedBlob] = await Promise.all([
+          canvasToBlob(bgCanvas, MIME_BY_FORMAT.png),
+          canvasToBlob(transformCanvas, MIME_BY_FORMAT.png),
+          canvasToBlob(combinedCanvas, MIME_BY_FORMAT.png),
+        ]);
+
+        if (isCancelled) {
+          return;
+        }
+
+        const nextBackgroundUrl = URL.createObjectURL(bgBlob);
+        const nextTransformUrl = URL.createObjectURL(transformBlob);
+        const nextCombinedUrl = URL.createObjectURL(combinedBlob);
+
+        setBackgroundPreviewUrl((previousUrl) => {
+          if (previousUrl) {
+            URL.revokeObjectURL(previousUrl);
+          }
+          return nextBackgroundUrl;
+        });
+        setTransformPreviewUrl((previousUrl) => {
+          if (previousUrl) {
+            URL.revokeObjectURL(previousUrl);
+          }
+          return nextTransformUrl;
+        });
+        setCombinedPreviewUrl((previousUrl) => {
+          if (previousUrl) {
+            URL.revokeObjectURL(previousUrl);
+          }
+          return nextCombinedUrl;
+        });
+      } catch {
+        // Keep existing previews if real-time generation fails.
+      } finally {
+        if (sourceImageUrl) {
+          URL.revokeObjectURL(sourceImageUrl);
+        }
+      }
+    };
+
+    generateLivePreviews();
+
+    return () => {
+      isCancelled = true;
+      if (sourceImageUrl) {
+        URL.revokeObjectURL(sourceImageUrl);
+      }
+    };
+  }, [
+    selectedFile,
+    resizeWidth,
+    removeBackground,
+    backgroundSensitivity,
+    rotation,
+    mirrorHorizontal,
+  ]);
 
   const simulateProgress = (setter, onStart, onDone) => {
     onStart();
@@ -249,6 +396,18 @@ const ConverterPage = () => {
     }
     if (selectedPreviewUrl) {
       URL.revokeObjectURL(selectedPreviewUrl);
+    }
+    if (backgroundPreviewUrl) {
+      URL.revokeObjectURL(backgroundPreviewUrl);
+      setBackgroundPreviewUrl("");
+    }
+    if (transformPreviewUrl) {
+      URL.revokeObjectURL(transformPreviewUrl);
+      setTransformPreviewUrl("");
+    }
+    if (combinedPreviewUrl) {
+      URL.revokeObjectURL(combinedPreviewUrl);
+      setCombinedPreviewUrl("");
     }
 
     setSelectedFile(file);
@@ -468,6 +627,11 @@ const ConverterPage = () => {
           />
         </div>
 
+        <section className="adsense-slot" aria-label="Advertisement section">
+          <p>AdSense Space</p>
+          <small>Place your Google AdSense script/banner here.</small>
+        </section>
+
         <div className="controls-row">
           <label className="field">
             <span>Convert from</span>
@@ -496,15 +660,6 @@ const ConverterPage = () => {
               <option value="avif">AVIF</option>
             </select>
           </label>
-
-          <button
-            type="button"
-            className="convert-btn"
-            onClick={handleConvert}
-            disabled={!selectedFile || isUploading || isConverting}
-          >
-            {isConverting ? "Converting..." : "Convert Image"}
-          </button>
         </div>
 
         <div className="progress-blocks">
@@ -673,8 +828,18 @@ const ConverterPage = () => {
                 </label>
               </article>
             </div>
+            <br />
+            <button
+              type="button"
+              className="convert-btn"
+              onClick={handleConvert}
+              disabled={!selectedFile || isUploading || isConverting}
+            >
+              {isConverting ? "Converting..." : "Convert Image"}
+            </button>
           </section>
-          <p className="option-preview">
+
+          {/* <p className="option-preview">
             Ready to convert from{" "}
             {(fromFormat === "auto"
               ? detectedFormat
@@ -682,22 +847,18 @@ const ConverterPage = () => {
             ).toUpperCase()}{" "}
             to {toFormat.toUpperCase()} at {quality}% quality
             {addWatermark ? ` with watermark "${watermarkText}".` : "."}
-          </p>
-          {downloadUrl && (
-            <a
-              className="download-btn"
-              href={downloadUrl}
-              download={downloadName}
-            >
-              Download Converted File
-            </a>
-          )}
-          {(selectedPreviewUrl || downloadUrl) && (
+          </p> */}
+
+          {(selectedPreviewUrl ||
+            backgroundPreviewUrl ||
+            transformPreviewUrl ||
+            combinedPreviewUrl ||
+            downloadUrl) && (
             <section
               className="preview-compare"
               aria-label="Image comparison preview"
             >
-              <h3>Before and After Preview</h3>
+              <h3>Live Feature Preview Frames</h3>
               <div className="preview-grid">
                 <article className="preview-card">
                   <h4>Original Upload</h4>
@@ -713,24 +874,70 @@ const ConverterPage = () => {
                   )}
                 </article>
                 <article className="preview-card">
-                  <h4>Processed Output</h4>
-                  {downloadUrl ? (
-                    <img src={downloadUrl} alt="Processed output preview" />
+                  <h4>Background Remover Output</h4>
+                  {backgroundPreviewUrl ? (
+                    <img
+                      src={backgroundPreviewUrl}
+                      alt="Background remover live preview"
+                    />
                   ) : (
                     <p className="preview-placeholder">
-                      Convert the image to see output preview.
+                      Enable background remover to preview changes.
                     </p>
+                  )}
+                </article>
+                <article className="preview-card">
+                  <h4>Rotate and Mirror Output</h4>
+                  {transformPreviewUrl ? (
+                    <img
+                      src={transformPreviewUrl}
+                      alt="Rotate and mirror live preview"
+                    />
+                  ) : (
+                    <p className="preview-placeholder">
+                      Choose rotation or mirror options to preview.
+                    </p>
+                  )}
+                </article>
+                {/* <article className="preview-card">
+                  <h4>Combined Live Output</h4>
+                  {combinedPreviewUrl ? (
+                    <img
+                      src={combinedPreviewUrl}
+                      alt="Combined feature preview"
+                    />
+                  ) : (
+                    <p className="preview-placeholder">
+                      Upload an image to view all selected features together.
+                    </p>
+                  )}
+                </article> */}
+                <article className="preview-card-final">
+                  <h4>Final Converted Output</h4>
+                  {downloadUrl ? (
+                    <img
+                      src={downloadUrl}
+                      alt="Final converted output preview"
+                    />
+                  ) : (
+                    <p className="preview-placeholder">
+                      Click convert to generate downloadable output.
+                    </p>
+                  )}
+                  {downloadUrl && (
+                    <a
+                      className="download-btn"
+                      href={downloadUrl}
+                      download={downloadName}
+                    >
+                      Download Result
+                    </a>
                   )}
                 </article>
               </div>
             </section>
           )}
         </div>
-      </section>
-
-      <section className="adsense-slot" aria-label="Advertisement section">
-        <p>AdSense Space</p>
-        <small>Place your Google AdSense script/banner here.</small>
       </section>
 
       <section
