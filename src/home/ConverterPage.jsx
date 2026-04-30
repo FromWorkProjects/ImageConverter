@@ -115,6 +115,22 @@ const rotateAndMirrorCanvas = (sourceCanvas, rotation, mirrorEnabled) => {
   return outputCanvas;
 };
 
+const getResizeDimensions = ({
+  imageWidth,
+  imageHeight,
+  widthInput,
+  heightInput,
+}) => {
+  const width = Math.max(1, Number(widthInput) || imageWidth);
+  const customHeight = Number(heightInput);
+  const useCustomHeight = Number.isFinite(customHeight) && customHeight > 0;
+  const height = useCustomHeight
+    ? Math.max(1, customHeight)
+    : Math.max(1, Math.round((imageHeight / imageWidth) * width));
+
+  return { width, height };
+};
+
 const drawWatermark = (context, width, height, watermarkText) => {
   const fontSize = Math.max(18, Math.round(width * 0.035));
   context.save();
@@ -193,7 +209,7 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
   const [fromFormat, setFromFormat] = useState("auto");
   const [toFormat, setToFormat] = useState("png");
   const [resizeWidth, setResizeWidth] = useState(1920);
-  const [resizeHeight, setResizeHeight] = useState(1080);
+  const [resizeHeight, setResizeHeight] = useState("");
   const [quality, setQuality] = useState(85);
   const [addWatermark, setAddWatermark] = useState(false);
   const [watermarkText, setWatermarkText] = useState("Convertnest");
@@ -257,8 +273,12 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
       try {
         sourceImageUrl = URL.createObjectURL(selectedFile);
         const image = await loadImageFromUrl(sourceImageUrl);
-        const width = Math.max(1, Number(resizeWidth) || image.width);
-        const height = Math.max(1, Number(resizeHeight) || image.height);
+        const { width, height } = getResizeDimensions({
+          imageWidth: image.width,
+          imageHeight: image.height,
+          widthInput: resizeWidth,
+          heightInput: resizeHeight,
+        });
 
         const baseCanvas = document.createElement("canvas");
         baseCanvas.width = width;
@@ -446,8 +466,12 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
       setConvertProgress(32);
       setStatusMessage("Applying selected options...");
 
-      const width = Math.max(1, Number(resizeWidth) || image.width);
-      const height = Math.max(1, Number(resizeHeight) || image.height);
+      const { width, height } = getResizeDimensions({
+        imageWidth: image.width,
+        imageHeight: image.height,
+        widthInput: resizeWidth,
+        heightInput: resizeHeight,
+      });
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
@@ -725,9 +749,8 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
                   min="1"
                   max="7680"
                   value={resizeHeight}
-                  onChange={(event) =>
-                    setResizeHeight(Number(event.target.value))
-                  }
+                  onChange={(event) => setResizeHeight(event.target.value)}
+                  placeholder="Auto (based on width)"
                 />
               </label>
             </div>
