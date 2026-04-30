@@ -10,18 +10,18 @@ const stats = [
     body: "JPG is best for photos and smaller file sizes, PNG is best for transparency and sharp graphics, WEBP offers strong web compression with good quality, AVIF provides modern high-efficiency output, and SVG is ideal for scalable vector visuals.",
   },
   {
-    title: "Why use ImageConvert Pro",
-    body: "ImageConvert Pro combines conversion, resize controls, compression tuning, watermarking, background cleanup, and orientation tools in one workflow so creators and teams can prepare production-ready images faster.",
+    title: "Why use Convertnest",
+    body: "Convertnest combines conversion, resize controls, compression tuning, watermarking, background cleanup, and orientation tools in one workflow so creators and teams can prepare production-ready images faster.",
   },
 ];
 
-function About() {
+function About({ theme = "light" }) {
   return (
-    <main className="info-page">
+    <main className={`info-page theme-${theme}`}>
       <div className="info-shell">
         <header className="info-topbar">
           <div className="info-brand">
-            <a href="/">ImageConvert Pro</a>
+            <a href="/">Convertnest</a>
             <span>Media format conversion for modern teams</span>
           </div>
           <nav className="info-nav" aria-label="Page navigation">
@@ -38,7 +38,7 @@ function About() {
           <div>
             <p className="info-kicker">About the product</p>
             <h1>
-              ImageConvert Pro helps you convert and optimize images for real
+              Convertnest helps you convert and optimize images for real
               web use.
             </h1>
             <p>
@@ -84,7 +84,7 @@ function About() {
         <section className="contact-card">
           <h2>Who this application is for</h2>
           <p>
-            ImageConvert Pro is useful for bloggers, developers, marketers,
+            Convertnest is useful for bloggers, developers, marketers,
             ecommerce sellers, students, and content creators who frequently
             prepare product images, social posts, banners, and website assets.
             It is designed for quick results and consistent quality in
@@ -98,7 +98,7 @@ function About() {
           </div>
         </section>
 
-        <footer className="info-footer">Powered by ImageConvert Pro</footer>
+        <footer className="info-footer">Powered by Convertnest</footer>
       </div>
     </main>
   );

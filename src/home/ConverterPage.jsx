@@ -179,8 +179,7 @@ const ThemeIcon = ({ theme }) => {
   );
 };
 
-const ConverterPage = () => {
-  const [theme, setTheme] = useState("light");
+const ConverterPage = ({ theme = "light", onToggleTheme }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedPreviewUrl, setSelectedPreviewUrl] = useState("");
   const [backgroundPreviewUrl, setBackgroundPreviewUrl] = useState("");
@@ -194,9 +193,10 @@ const ConverterPage = () => {
   const [fromFormat, setFromFormat] = useState("auto");
   const [toFormat, setToFormat] = useState("png");
   const [resizeWidth, setResizeWidth] = useState(1920);
+  const [resizeHeight, setResizeHeight] = useState(1080);
   const [quality, setQuality] = useState(85);
   const [addWatermark, setAddWatermark] = useState(false);
-  const [watermarkText, setWatermarkText] = useState("ImageConvert Pro");
+  const [watermarkText, setWatermarkText] = useState("Convertnest");
   const [removeBackground, setRemoveBackground] = useState(false);
   const [backgroundSensitivity, setBackgroundSensitivity] = useState(55);
   const [rotation, setRotation] = useState(0);
@@ -258,10 +258,7 @@ const ConverterPage = () => {
         sourceImageUrl = URL.createObjectURL(selectedFile);
         const image = await loadImageFromUrl(sourceImageUrl);
         const width = Math.max(1, Number(resizeWidth) || image.width);
-        const height = Math.max(
-          1,
-          Math.round((image.height / image.width) * width),
-        );
+        const height = Math.max(1, Number(resizeHeight) || image.height);
 
         const baseCanvas = document.createElement("canvas");
         baseCanvas.width = width;
@@ -356,6 +353,7 @@ const ConverterPage = () => {
   }, [
     selectedFile,
     resizeWidth,
+    resizeHeight,
     removeBackground,
     backgroundSensitivity,
     rotation,
@@ -449,10 +447,7 @@ const ConverterPage = () => {
       setStatusMessage("Applying selected options...");
 
       const width = Math.max(1, Number(resizeWidth) || image.width);
-      const height = Math.max(
-        1,
-        Math.round((image.height / image.width) * width),
-      );
+      const height = Math.max(1, Number(resizeHeight) || image.height);
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
@@ -549,7 +544,7 @@ const ConverterPage = () => {
     <main className={`converter-page theme-${theme}`}>
       <header className="top-menu">
         <div className="brand-block">
-          <div className="brand">ImageConvert Pro</div>
+          <div className="brand">Convertnest</div>
           <span className="brand-tag">
             Professional image tools for web teams
           </span>
@@ -570,11 +565,7 @@ const ConverterPage = () => {
         <button
           type="button"
           className="theme-toggle"
-          onClick={() =>
-            setTheme((currentTheme) =>
-              currentTheme === "light" ? "dark" : "light",
-            )
-          }
+          onClick={onToggleTheme}
           aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
         >
           <ThemeIcon theme={theme} />
@@ -713,16 +704,33 @@ const ConverterPage = () => {
         <div className="extra-features">
           <h2>Advanced Options</h2>
           <div className="feature-grid">
-            <label className="feature-item">
-              <span>Resize Width (px)</span>
-              <input
-                type="number"
-                min="320"
-                max="7680"
-                value={resizeWidth}
-                onChange={(event) => setResizeWidth(Number(event.target.value))}
-              />
-            </label>
+            <div className="feature-item">
+              <span>Custom Resize (px)</span>
+              <label className="field">
+                <span>Width</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="7680"
+                  value={resizeWidth}
+                  onChange={(event) =>
+                    setResizeWidth(Number(event.target.value))
+                  }
+                />
+              </label>
+              <label className="field">
+                <span>Height</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="7680"
+                  value={resizeHeight}
+                  onChange={(event) =>
+                    setResizeHeight(Number(event.target.value))
+                  }
+                />
+              </label>
+            </div>
 
             <label className="feature-item">
               <span>Compression Quality ({quality}%)</span>
@@ -965,7 +973,7 @@ const ConverterPage = () => {
 
       <footer className="page-footer">
         <p>
-          Powered by <span>ImageConvert Pro</span>
+          Powered by <span>Convertnest</span>
         </p>
         <div className="footer-links">
           <a href="/about">About</a>

@@ -1,12 +1,12 @@
 import "./InfoPages.css";
 
-function PrivacyPolicy() {
+function PrivacyPolicy({ theme = "light" }) {
   return (
-    <main className="info-page">
+    <main className={`info-page theme-${theme}`}>
       <div className="info-shell">
         <header className="info-topbar">
           <div className="info-brand">
-            <a href="/">ImageConvert Pro</a>
+            <a href="/">Convertnest</a>
             <span>Media format conversion for modern teams</span>
           </div>
           <nav className="info-nav" aria-label="Page navigation">
@@ -22,11 +22,11 @@ function PrivacyPolicy() {
         <section className="info-hero">
           <div>
             <p className="info-kicker">Privacy policy</p>
-            <h1>Your privacy matters at ImageConvert Pro.</h1>
+            <h1>Your privacy matters at Convertnest.</h1>
             <p>
               This Privacy Policy explains what information is processed when
-              you use ImageConvert Pro, how we use it, and what choices you
-              have. By using the service, you agree to this policy.
+              you use Convertnest, how we use it, and what choices you have. By
+              using the service, you agree to this policy.
             </p>
           </div>
 
@@ -93,10 +93,10 @@ function PrivacyPolicy() {
           <article className="privacy-card">
             <h2>3. How image files are handled</h2>
             <p>
-              ImageConvert Pro is designed so that file processing happens
-              inside the browser during your active session. Converted files are
-              generated for download and are not intended to be permanently
-              stored by us as part of normal operation.
+              Convertnest is designed so that file processing happens inside the
+              browser during your active session. Converted files are generated
+              for download and are not intended to be permanently stored by us
+              as part of normal operation.
             </p>
           </article>
           <article className="privacy-card">
@@ -145,7 +145,7 @@ function PrivacyPolicy() {
           <article className="privacy-card">
             <h2>8. Children&apos;s privacy</h2>
             <p>
-              ImageConvert Pro is not intended for children under 13. We do not
+              Convertnest is not intended for children under 13. We do not
               knowingly collect personal data from children. If you believe a
               child provided personal information, please contact us so we can
               take appropriate action.

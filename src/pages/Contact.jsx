@@ -1,12 +1,12 @@
 import "./InfoPages.css";
 
-function Contact() {
+function Contact({ theme = "light" }) {
   return (
-    <main className="info-page">
+    <main className={`info-page theme-${theme}`}>
       <div className="info-shell">
         <header className="info-topbar">
           <div className="info-brand">
-            <a href="/">ImageConvert Pro</a>
+            <a href="/">Convertnest</a>
             <span>Media format conversion for modern teams</span>
           </div>
           <nav className="info-nav" aria-label="Page navigation">
@@ -59,14 +59,14 @@ function Contact() {
               business contact information when you are ready to publish.
             </p>
             <div className="contact-links">
-              <a href="mailto:support@imageconvertpro.com">
-                support@imageconvertpro.com
+              <a href="mailto:support@convertnest.com">
+                support@convertnest.com
               </a>
               <a
-                href="mailto:partnerships@imageconvertpro.com"
+                href="mailto:partnerships@convertnest.com"
                 className="secondary"
               >
-                partnerships@imageconvertpro.com
+                partnerships@convertnest.com
               </a>
             </div>
           </article>

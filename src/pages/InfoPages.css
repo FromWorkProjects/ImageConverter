@@ -21,6 +21,25 @@
     linear-gradient(180deg, var(--page-bg) 0%, #ffffff 100%);
 }
 
+.info-page.theme-dark {
+  --page-bg: #09111f;
+  --panel-bg: rgba(12, 20, 35, 0.84);
+  --panel-strong: #101a2d;
+  --text-primary: #edf2ff;
+  --text-secondary: #98a4bd;
+  --line: rgba(148, 163, 184, 0.18);
+  --accent: #7c9cff;
+  --accent-soft: rgba(124, 156, 255, 0.16);
+  --soft-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(124, 156, 255, 0.2),
+      transparent 34%
+    ),
+    linear-gradient(180deg, var(--page-bg) 0%, #0a1220 100%);
+}
+
 .info-shell {
   max-width: 100%;
   margin: 0 auto;

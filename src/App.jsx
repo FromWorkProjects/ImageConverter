@@ -14,9 +14,18 @@ const normalizePath = (pathname) => {
 };
 
 const getCurrentPath = () => normalizePath(window.location.pathname);
+const THEME_STORAGE_KEY = "convertnest-theme";
 
 function App() {
   const [path, setPath] = useState(getCurrentPath);
+  const [theme, setTheme] = useState(() => {
+    const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return storedTheme === "dark" ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
 
   useEffect(() => {
     const syncPath = () => setPath(getCurrentPath());
@@ -33,15 +42,24 @@ function App() {
   const page = useMemo(() => {
     switch (path) {
       case "/about":
-        return <About />;
+        return <About theme={theme} />;
       case "/privacy":
-        return <PrivacyPolicy />;
+        return <PrivacyPolicy theme={theme} />;
       case "/contact":
-        return <Contact />;
+        return <Contact theme={theme} />;
       default:
-        return <ConverterPage />;
+        return (
+          <ConverterPage
+            theme={theme}
+            onToggleTheme={() =>
+              setTheme((currentTheme) =>
+                currentTheme === "light" ? "dark" : "light",
+              )
+            }
+          />
+        );
     }
-  }, [path]);
+  }, [path, theme]);
 
   return page;
 }
