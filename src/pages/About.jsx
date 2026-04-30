@@ -2,16 +2,16 @@ import "./InfoPages.css";
 
 const stats = [
   {
-    title: "Built for fast conversion",
-    body: "Convert common media-ready image formats in a clean workflow with resize, quality, and watermark controls in one place.",
+    title: "How to convert JPG to PNG",
+    body: "Upload your JPG image, choose PNG as the output format, and click convert. PNG is ideal when you need lossless quality, transparent backgrounds, or clean graphics for websites, logos, and design assets.",
   },
   {
-    title: "Focused on practical output",
-    body: "The application is designed for creators, marketers, and web teams who need polished files for websites, campaigns, and content publishing.",
+    title: "Best image formats explained",
+    body: "JPG is best for photos and smaller file sizes, PNG is best for transparency and sharp graphics, WEBP offers strong web compression with good quality, AVIF provides modern high-efficiency output, and SVG is ideal for scalable vector visuals.",
   },
   {
-    title: "Simple by design",
-    body: "Instead of a crowded editing interface, the product keeps the essentials visible so users can upload, convert, and download quickly.",
+    title: "Why use ImageConvert Pro",
+    body: "ImageConvert Pro combines conversion, resize controls, compression tuning, watermarking, background cleanup, and orientation tools in one workflow so creators and teams can prepare production-ready images faster.",
   },
 ];
 
@@ -38,13 +38,14 @@ function About() {
           <div>
             <p className="info-kicker">About the product</p>
             <h1>
-              Built to make format conversion feel fast, clean, and reliable.
+              ImageConvert Pro helps you convert and optimize images for real
+              web use.
             </h1>
             <p>
-              ImageConvert Pro helps users prepare visual media for delivery
-              across websites, social channels, and internal workflows. The
-              current experience focuses on image conversion while laying the
-              foundation for a broader media toolkit.
+              This application is built for people who work with images every
+              day and need practical output quickly. From JPG to PNG conversion
+              to quality tuning and live previews, the goal is to reduce time
+              between upload and final download while keeping output clean.
             </p>
           </div>
 
@@ -55,14 +56,17 @@ function About() {
             </div>
             <div>
               <strong>Core tools</strong>
-              <span>Resize controls, compression tuning, and watermarking</span>
+              <span>
+                Resize, compression, watermark, background remover, rotate and
+                mirror
+              </span>
             </div>
             <div>
-              <strong>Product goal</strong>
+              <strong>Main benefit</strong>
               <p>
-                Reduce friction between upload and final delivery so teams can
-                move from source asset to production-ready file without extra
-                steps.
+                Keep image conversion simple for creators, ecommerce teams,
+                students, and agencies who need better format control without
+                complex editing software.
               </p>
             </div>
           </aside>
@@ -80,10 +84,11 @@ function About() {
         <section className="contact-card">
           <h2>Who this application is for</h2>
           <p>
-            This app is a good fit for small businesses, agencies, students,
-            ecommerce teams, and creators who regularly need lighter, cleaner,
-            or better-supported file formats. It is especially useful when speed
-            matters more than advanced editing complexity.
+            ImageConvert Pro is useful for bloggers, developers, marketers,
+            ecommerce sellers, students, and content creators who frequently
+            prepare product images, social posts, banners, and website assets.
+            It is designed for quick results and consistent quality in
+            day-to-day workflows.
           </p>
           <div className="contact-links">
             <a href="/">Start converting files</a>
