@@ -58,6 +58,63 @@ const canvasToBlob = (canvas, mimeType, qualityValue) =>
     );
   });
 
+const removeLightBackground = (context, width, height, sensitivity) => {
+  const imageData = context.getImageData(0, 0, width, height);
+  const { data } = imageData;
+  const threshold = 210 - Math.round((sensitivity / 100) * 80);
+
+  for (let index = 0; index < data.length; index += 4) {
+    const red = data[index];
+    const green = data[index + 1];
+    const blue = data[index + 2];
+    const alpha = data[index + 3];
+
+    if (alpha === 0) {
+      continue;
+    }
+
+    const maxChannel = Math.max(red, green, blue);
+    const minChannel = Math.min(red, green, blue);
+    const isNeutralTone = maxChannel - minChannel <= 32;
+    const brightness = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+
+    if (isNeutralTone && brightness >= threshold) {
+      const fadeStrength = Math.min(1, (brightness - threshold + 18) / 70);
+      data[index + 3] = Math.round(alpha * (1 - fadeStrength));
+    }
+  }
+
+  context.putImageData(imageData, 0, 0);
+};
+
+const rotateAndMirrorCanvas = (sourceCanvas, rotation, mirrorEnabled) => {
+  if (rotation === 0 && !mirrorEnabled) {
+    return sourceCanvas;
+  }
+
+  const radians = (rotation * Math.PI) / 180;
+  const swapAxis = Math.abs(rotation) % 180 === 90;
+  const outputCanvas = document.createElement("canvas");
+  outputCanvas.width = swapAxis ? sourceCanvas.height : sourceCanvas.width;
+  outputCanvas.height = swapAxis ? sourceCanvas.width : sourceCanvas.height;
+
+  const outputContext = outputCanvas.getContext("2d");
+  if (!outputContext) {
+    throw new Error("Canvas transformation is not available in this browser.");
+  }
+
+  outputContext.translate(outputCanvas.width / 2, outputCanvas.height / 2);
+  outputContext.rotate(radians);
+  outputContext.scale(mirrorEnabled ? -1 : 1, 1);
+  outputContext.drawImage(
+    sourceCanvas,
+    -sourceCanvas.width / 2,
+    -sourceCanvas.height / 2,
+  );
+
+  return outputCanvas;
+};
+
 const drawWatermark = (context, width, height, watermarkText) => {
   const fontSize = Math.max(18, Math.round(width * 0.035));
   context.save();
@@ -125,6 +182,7 @@ const ThemeIcon = ({ theme }) => {
 const ConverterPage = () => {
   const [theme, setTheme] = useState("light");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedPreviewUrl, setSelectedPreviewUrl] = useState("");
   const [detectedFormat, setDetectedFormat] = useState("auto");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -136,6 +194,10 @@ const ConverterPage = () => {
   const [quality, setQuality] = useState(85);
   const [addWatermark, setAddWatermark] = useState(false);
   const [watermarkText, setWatermarkText] = useState("ImageConvert Pro");
+  const [removeBackground, setRemoveBackground] = useState(false);
+  const [backgroundSensitivity, setBackgroundSensitivity] = useState(55);
+  const [rotation, setRotation] = useState(0);
+  const [mirrorHorizontal, setMirrorHorizontal] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [downloadName, setDownloadName] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
@@ -147,8 +209,11 @@ const ConverterPage = () => {
       if (downloadUrl) {
         URL.revokeObjectURL(downloadUrl);
       }
+      if (selectedPreviewUrl) {
+        URL.revokeObjectURL(selectedPreviewUrl);
+      }
     };
-  }, [downloadUrl]);
+  }, [downloadUrl, selectedPreviewUrl]);
 
   const simulateProgress = (setter, onStart, onDone) => {
     onStart();
@@ -182,8 +247,12 @@ const ConverterPage = () => {
     if (downloadUrl) {
       URL.revokeObjectURL(downloadUrl);
     }
+    if (selectedPreviewUrl) {
+      URL.revokeObjectURL(selectedPreviewUrl);
+    }
 
     setSelectedFile(file);
+    setSelectedPreviewUrl(URL.createObjectURL(file));
     setDetectedFormat(detectFileFormat(file));
     setDownloadUrl("");
     setDownloadName("");
@@ -244,23 +313,42 @@ const ConverterPage = () => {
       context.drawImage(image, 0, 0, width, height);
       setConvertProgress(58);
 
+      if (removeBackground) {
+        removeLightBackground(context, width, height, backgroundSensitivity);
+      }
+
+      const transformedCanvas = rotateAndMirrorCanvas(
+        canvas,
+        rotation,
+        mirrorHorizontal,
+      );
+      const outputContext = transformedCanvas.getContext("2d");
+      if (!outputContext) {
+        throw new Error("Output canvas is not available in this browser.");
+      }
+
       if (addWatermark && watermarkText.trim()) {
-        drawWatermark(context, width, height, watermarkText.trim());
+        drawWatermark(
+          outputContext,
+          transformedCanvas.width,
+          transformedCanvas.height,
+          watermarkText.trim(),
+        );
       }
 
       let convertedBlob;
       if (targetFormat === "svg") {
         setConvertProgress(78);
         convertedBlob = buildSvgBlob({
-          href: canvas.toDataURL("image/png"),
-          width,
-          height,
+          href: transformedCanvas.toDataURL("image/png"),
+          width: transformedCanvas.width,
+          height: transformedCanvas.height,
           watermarkText: addWatermark ? watermarkText.trim() : "",
         });
       } else {
         setConvertProgress(78);
         convertedBlob = await canvasToBlob(
-          canvas,
+          transformedCanvas,
           MIME_BY_FORMAT[targetFormat],
           targetFormat === "png" || targetFormat === "svg"
             ? undefined
@@ -510,6 +598,82 @@ const ConverterPage = () => {
               />
             </div>
           </div>
+          <section
+            className="feature-showcase"
+            aria-label="Extended image toolkit features"
+          >
+            <div className="feature-header">
+              <h3>Featured Toolkit</h3>
+              <p>
+                Use dedicated tools for background cleanup and orientation
+                fixes.
+              </p>
+            </div>
+            <div className="feature-showcase-grid">
+              <article className="feature-card">
+                <h4>Feature: Background Remover</h4>
+                <p>
+                  Makes bright neutral backgrounds transparent for product
+                  shots, profile photos, and stickers.
+                </p>
+                <label className="checkbox-field">
+                  <input
+                    type="checkbox"
+                    checked={removeBackground}
+                    onChange={(event) =>
+                      setRemoveBackground(event.target.checked)
+                    }
+                  />
+                  <span>Enable Background Remover</span>
+                </label>
+                <label className="feature-slider">
+                  <span>Sensitivity ({backgroundSensitivity}%)</span>
+                  <input
+                    type="range"
+                    min="20"
+                    max="100"
+                    value={backgroundSensitivity}
+                    onChange={(event) =>
+                      setBackgroundSensitivity(Number(event.target.value))
+                    }
+                    disabled={!removeBackground}
+                  />
+                </label>
+              </article>
+
+              <article className="feature-card">
+                <h4>Feature: Rotate and Mirror</h4>
+                <p>
+                  Correct orientation quickly and mirror horizontally when
+                  preparing social posts or profile banners.
+                </p>
+                <label className="field">
+                  <span>Rotate Image</span>
+                  <select
+                    value={rotation}
+                    onChange={(event) =>
+                      setRotation(Number(event.target.value))
+                    }
+                  >
+                    <option value={0}>No rotation</option>
+                    <option value={90}>90° clockwise</option>
+                    <option value={180}>180°</option>
+                    <option value={270}>270° clockwise</option>
+                  </select>
+                </label>
+                <label className="checkbox-field">
+                  <input
+                    type="checkbox"
+                    checked={mirrorHorizontal}
+                    onChange={(event) =>
+                      setMirrorHorizontal(event.target.checked)
+                    }
+                  />
+                  <span>Mirror Horizontally</span>
+                </label>
+              </article>
+            </div>
+          </section>
           <p className="option-preview">
             Ready to convert from{" "}
             {(fromFormat === "auto"
@@ -528,12 +692,53 @@ const ConverterPage = () => {
               Download Converted File
             </a>
           )}
+          {(selectedPreviewUrl || downloadUrl) && (
+            <section
+              className="preview-compare"
+              aria-label="Image comparison preview"
+            >
+              <h3>Before and After Preview</h3>
+              <div className="preview-grid">
+                <article className="preview-card">
+                  <h4>Original Upload</h4>
+                  {selectedPreviewUrl ? (
+                    <img
+                      src={selectedPreviewUrl}
+                      alt="Original uploaded file preview"
+                    />
+                  ) : (
+                    <p className="preview-placeholder">
+                      Upload an image to generate preview.
+                    </p>
+                  )}
+                </article>
+                <article className="preview-card">
+                  <h4>Processed Output</h4>
+                  {downloadUrl ? (
+                    <img src={downloadUrl} alt="Processed output preview" />
+                  ) : (
+                    <p className="preview-placeholder">
+                      Convert the image to see output preview.
+                    </p>
+                  )}
+                </article>
+              </div>
+            </section>
+          )}
         </div>
       </section>
 
       <section className="adsense-slot" aria-label="Advertisement section">
         <p>AdSense Space</p>
         <small>Place your Google AdSense script/banner here.</small>
+      </section>
+
+      <section
+        className="adsense-slot secondary"
+        aria-label="Secondary advertisement section"
+      >
+        <p>AdSense Space - Feature Highlight Zone</p>
+        <small>Use this additional slot for in-content responsive ads.</small>
       </section>
 
       <section className="benefits">

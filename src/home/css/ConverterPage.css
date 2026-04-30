@@ -398,6 +398,73 @@
   font-size: 15px;
 }
 
+.feature-showcase {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px;
+  background: color-mix(in srgb, var(--panel-muted) 74%, transparent 26%);
+}
+
+.feature-header {
+  margin-bottom: 14px;
+}
+
+.feature-header h3 {
+  margin: 0;
+  font-size: 19px;
+  color: var(--text-primary);
+}
+
+.feature-header p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.feature-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.feature-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  background: color-mix(in srgb, var(--panel-strong) 92%, transparent 8%);
+}
+
+.feature-card h4 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.feature-slider {
+  display: grid;
+  gap: 8px;
+}
+
+.feature-slider span {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.feature-slider input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
 .download-btn {
   margin-top: 16px;
   display: inline-flex;
@@ -423,6 +490,58 @@
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
 }
 
+.preview-compare {
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.preview-compare h3 {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.preview-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--panel-strong) 94%, transparent 6%);
+  display: grid;
+  gap: 10px;
+}
+
+.preview-card h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.preview-card img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  max-height: 260px;
+  object-fit: contain;
+  background: color-mix(in srgb, var(--panel-muted) 70%, transparent 30%);
+}
+
+.preview-placeholder {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
 .adsense-slot {
   margin: 34px 0;
   min-height: 170px;
@@ -440,6 +559,11 @@
   margin: 0;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.adsense-slot.secondary {
+  min-height: 130px;
+  border-style: solid;
 }
 
 .benefits {
@@ -539,6 +663,11 @@
   }
 
   .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-showcase-grid,
+  .preview-grid {
     grid-template-columns: 1fr;
   }
 
