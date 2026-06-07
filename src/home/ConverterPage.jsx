@@ -584,6 +584,15 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
             <li>
               <a href="/contact">Contact</a>
             </li>
+            <li>
+              <a href="/contact">Terms Conditions</a>
+            </li>
+            <li>
+              <a href="/contact">Blog</a>
+            </li>
+            <li>
+              <a href="/contact">Disclaimer</a>
+            </li>
           </ul>
         </nav>
         <button
@@ -641,11 +650,10 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
             onChange={handleFileChange}
           />
         </div>
-
-        <section className="adsense-slot" aria-label="Advertisement section">
-          <p>AdSense Space</p>
-          <small>Place your Google AdSense script/banner here.</small>
-        </section>
+        <p style={{ marginTop: 4, marginBottom: 4 }}>
+          Learn more about image formats in our
+          <a href="/blog/webp-vs-jpg"> detailed comparison guide</a>.
+        </p>
 
         <div className="controls-row">
           <label className="field">
@@ -676,6 +684,10 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
             </select>
           </label>
         </div>
+
+        <section className="adsense-slot" aria-label="Advertisement section">
+          <div className="ad-placeholder">AA</div>
+        </section>
 
         <div className="progress-blocks">
           <div className="progress-row">
@@ -784,6 +796,7 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
               />
             </div>
           </div>
+
           <section
             className="feature-showcase"
             aria-label="Extended image toolkit features"
@@ -904,45 +917,7 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
                     </p>
                   )}
                 </article>
-                <article className="preview-card">
-                  <h4>Background Remover Output</h4>
-                  {backgroundPreviewUrl ? (
-                    <img
-                      src={backgroundPreviewUrl}
-                      alt="Background remover live preview"
-                    />
-                  ) : (
-                    <p className="preview-placeholder">
-                      Enable background remover to preview changes.
-                    </p>
-                  )}
-                </article>
-                <article className="preview-card">
-                  <h4>Rotate and Mirror Output</h4>
-                  {transformPreviewUrl ? (
-                    <img
-                      src={transformPreviewUrl}
-                      alt="Rotate and mirror live preview"
-                    />
-                  ) : (
-                    <p className="preview-placeholder">
-                      Choose rotation or mirror options to preview.
-                    </p>
-                  )}
-                </article>
-                {/* <article className="preview-card">
-                  <h4>Combined Live Output</h4>
-                  {combinedPreviewUrl ? (
-                    <img
-                      src={combinedPreviewUrl}
-                      alt="Combined feature preview"
-                    />
-                  ) : (
-                    <p className="preview-placeholder">
-                      Upload an image to view all selected features together.
-                    </p>
-                  )}
-                </article> */}
+
                 <article className="preview-card-final">
                   <h4>Final Converted Output</h4>
                   {downloadUrl ? (
@@ -971,12 +946,62 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
         </div>
       </section>
 
-      <section
-        className="adsense-slot secondary"
-        aria-label="Secondary advertisement section"
-      >
-        <p>AdSense Space - Feature Highlight Zone</p>
-        <small>Use this additional slot for in-content responsive ads.</small>
+      {/* for adsense acceptance */}
+      <section className="seo-content">
+        <h2>Free Online Image Converter Tool</h2>
+        <p>
+          Convertnest is a powerful browser-based image converter that allows
+          you to convert images between popular formats such as JPG, PNG, WEBP,
+          SVG, and AVIF without uploading your files to a server. This ensures
+          faster performance and better privacy.
+        </p>
+
+        <h3>How to Convert Images</h3>
+        <ol>
+          <li>Upload your image file</li>
+          <li>Select the desired output format</li>
+          <li>Adjust quality, size, or watermark settings</li>
+          <li>Click "Convert Image"</li>
+          <li>Download your optimized file instantly</li>
+        </ol>
+
+        <h3>Supported Formats</h3>
+        <p>
+          Our tool supports modern and widely used image formats including JPG,
+          PNG, WEBP, SVG, and AVIF. Each format is optimized for different use
+          cases such as web performance, transparency, and high-quality
+          printing.
+        </p>
+
+        <h3>Why Use Convertnest?</h3>
+        <ul>
+          <li>No file uploads required (secure processing)</li>
+          <li>Fast conversion directly in your browser</li>
+          <li>Advanced features like background removal and watermarking</li>
+          <li>Completely free to use</li>
+        </ul>
+
+        <h3>Frequently Asked Questions</h3>
+        <p>
+          <strong>Is this tool free?</strong>
+          <br />
+          Yes, it is completely free.
+        </p>
+        <p>
+          <strong>Are my images safe ?</strong>
+          <br />
+          Yes, files are processed locally in your browser.
+        </p>
+        <p>
+          <strong>Which format is best?</strong>
+          <br />
+          WEBP is best for web, PNG for transparency, JPG for photos.
+        </p>
+      </section>
+      {/* ends here */}
+
+      <section className="adsense-slot" aria-label="Advertisement section">
+        <div className="ad-placeholder">AA</div>
       </section>
 
       <section className="benefits">

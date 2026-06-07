@@ -525,6 +525,10 @@
   font-size: 18px;
 }
 
+.seo-content {
+  margin-top: 15px;
+}
+
 .preview-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
