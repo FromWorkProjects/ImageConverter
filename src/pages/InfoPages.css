@@ -233,6 +233,7 @@
   }
 
   .info-topbar,
+  .site-header,
   .info-hero,
   .info-grid,
   .contact-layout,
@@ -240,7 +241,8 @@
     grid-template-columns: 1fr;
   }
 
-  .info-topbar {
+  .info-topbar,
+  .site-header {
     align-items: flex-start;
     flex-direction: column;
   }

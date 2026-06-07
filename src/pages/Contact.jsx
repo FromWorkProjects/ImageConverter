@@ -1,23 +1,11 @@
+import SiteHeader from "../components/SiteHeader.jsx";
 import "./InfoPages.css";
 
 function Contact({ theme = "light" }) {
   return (
     <main className={`info-page theme-${theme}`}>
       <div className="info-shell">
-        <header className="info-topbar">
-          <div className="info-brand">
-            <a href="/">Convertnest</a>
-            <span>Media format conversion for modern teams</span>
-          </div>
-          <nav className="info-nav" aria-label="Page navigation">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/contact" className="active">
-              Contact
-            </a>
-          </nav>
-        </header>
+        <SiteHeader activePath="/contact" />
 
         <section className="info-hero">
           <div>

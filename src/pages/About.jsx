@@ -1,3 +1,4 @@
+import SiteHeader from "../components/SiteHeader.jsx";
 import "./InfoPages.css";
 
 const stats = [
@@ -19,27 +20,14 @@ function About({ theme = "light" }) {
   return (
     <main className={`info-page theme-${theme}`}>
       <div className="info-shell">
-        <header className="info-topbar">
-          <div className="info-brand">
-            <a href="/">Convertnest</a>
-            <span>Media format conversion for modern teams</span>
-          </div>
-          <nav className="info-nav" aria-label="Page navigation">
-            <a href="/">Home</a>
-            <a href="/about" className="active">
-              About
-            </a>
-            <a href="/privacy">Privacy</a>
-            <a href="/contact">Contact</a>
-          </nav>
-        </header>
+        <SiteHeader activePath="/about" />
 
         <section className="info-hero">
           <div>
             <p className="info-kicker">About the product</p>
             <h1>
-              Convertnest helps you convert and optimize images for real
-              web use.
+              Convertnest helps you convert and optimize images for real web
+              use.
             </h1>
             <p>
               This application is built for people who work with images every
@@ -84,11 +72,11 @@ function About({ theme = "light" }) {
         <section className="contact-card">
           <h2>Who this application is for</h2>
           <p>
-            Convertnest is useful for bloggers, developers, marketers,
-            ecommerce sellers, students, and content creators who frequently
-            prepare product images, social posts, banners, and website assets.
-            It is designed for quick results and consistent quality in
-            day-to-day workflows.
+            Convertnest is useful for bloggers, developers, marketers, ecommerce
+            sellers, students, and content creators who frequently prepare
+            product images, social posts, banners, and website assets. It is
+            designed for quick results and consistent quality in day-to-day
+            workflows.
           </p>
           <div className="contact-links">
             <a href="/">Start converting files</a>

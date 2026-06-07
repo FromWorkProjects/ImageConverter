@@ -3,6 +3,9 @@ import "./App.css";
 import ConverterPage from "./home/ConverterPage.jsx";
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
+import Blog from "./pages/blog/Blog.jsx";
+import Disclaimer from "./pages/blog/Disclaimer.jsx";
+import TermsCondition from "./pages/blog/TermsCondition.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 
 const normalizePath = (pathname) => {
@@ -47,6 +50,12 @@ function App() {
         return <PrivacyPolicy theme={theme} />;
       case "/contact":
         return <Contact theme={theme} />;
+      case "/blog":
+        return <Blog theme={theme} />;
+      case "/disclaimer":
+        return <Disclaimer theme={theme} />;
+      case "/terms":
+        return <TermsCondition theme={theme} />;
       default:
         return (
           <ConverterPage

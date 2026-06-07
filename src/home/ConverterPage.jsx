@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import SiteHeader from "../components/SiteHeader.jsx";
 import "./css/ConverterPage.css";
 
 const MIME_BY_FORMAT = {
@@ -166,33 +167,6 @@ const buildSvgBlob = ({ href, width, height, watermarkText }) => {
 </svg>`;
 
   return new Blob([svgMarkup], { type: MIME_BY_FORMAT.svg });
-};
-
-const ThemeIcon = ({ theme }) => {
-  if (theme === "dark") {
-    return (
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        focusable="false"
-        className="theme-icon"
-      >
-        <path d="M21 12.8A9 9 0 1 1 11.2 3a7.2 7.2 0 0 0 9.8 9.8Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-      className="theme-icon"
-    >
-      <circle cx="12" cy="12" r="4.5" />
-      <path d="M12 1.8v3.1M12 19.1v3.1M22.2 12h-3.1M4.9 12H1.8M19.2 4.8l-2.2 2.2M7 17l-2.2 2.2M19.2 19.2 17 17M7 7 4.8 4.8" />
-    </svg>
-  );
 };
 
 const ConverterPage = ({ theme = "light", onToggleTheme }) => {
@@ -566,45 +540,11 @@ const ConverterPage = ({ theme = "light", onToggleTheme }) => {
 
   return (
     <main className={`converter-page theme-${theme}`}>
-      <header className="top-menu">
-        <div className="brand-block">
-          <div className="brand">Convertnest</div>
-          <span className="brand-tag">
-            Professional image tools for web teams
-          </span>
-        </div>
-        <nav aria-label="Main navigation">
-          <ul className="menu-links">
-            <li>
-              <a href="/privacy">Privacy Policy</a>
-            </li>
-            <li>
-              <a href="/about">About Us</a>
-            </li>
-            <li>
-              <a href="/contact">Contact</a>
-            </li>
-            <li>
-              <a href="/contact">Terms Conditions</a>
-            </li>
-            <li>
-              <a href="/contact">Blog</a>
-            </li>
-            <li>
-              <a href="/contact">Disclaimer</a>
-            </li>
-          </ul>
-        </nav>
-        <button
-          type="button"
-          className="theme-toggle"
-          onClick={onToggleTheme}
-          aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-        >
-          <ThemeIcon theme={theme} />
-          <span>{theme === "light" ? "Dark Mode" : "Light Mode"}</span>
-        </button>
-      </header>
+      <SiteHeader
+        theme={theme}
+        onToggleTheme={onToggleTheme}
+        showThemeToggle
+      />
 
       <section className="hero-content">
         <div>
